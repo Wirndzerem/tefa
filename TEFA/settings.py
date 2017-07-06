@@ -16,6 +16,12 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'mikilimnyuy.herokuapp.com'
+Traceback (most recent call last):
+  File "C:/Users/cobra/Desktop/filmora/good/TEFA/Core/views.py", line 2, in <module>
+    from Core.forms import ContactForm, UserRegisterForm, UserProfileForm, PictureForm, DonateForm
+ImportError: No module named 'Core'
+
+Process finished with exit code 1
 ]
 
 
