@@ -1,1 +1,1 @@
-web: gunicorn TEFA.wsgi --log-file -
+web: gunicorn mikilimnyuy.wsgi --log-file -
