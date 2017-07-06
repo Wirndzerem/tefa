@@ -7,7 +7,6 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.db.models import Q
-e
 import requests
 
 # Create your views here.
