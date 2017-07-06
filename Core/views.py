@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
-import urllib.parse
+# import urllib.parse
 import requests
 # Create your views here.
 
