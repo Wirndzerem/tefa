@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
-import urllib.parse
+# import urllibparse
 import requests
 # Create your views here.
 
@@ -249,72 +249,6 @@ def DonateMoMo(request):  # when you subscribe it enters a table with the course
 
             contactstring = str(_tel)
 
-            if len(contactstring) >= 9 and len(contactstring) <= 12:  # making sure number is above 9 digits for cameroon
-                Donate_transaction = UserDonateMoMo()
-                # composining the momo json request
-                api_url = main_api + urllib.parse.urlencode({'_amount': 1}) + "&" + urllib.parse.urlencode(
-                    {'_tel': _tel}) + "&_clP=&" + urllib.parse.urlencode({'_email': _email})
-                jason_data = requests.get(
-                    api_url).json()  # carries out transaction request and stores response (jason response from MTN Mobile Money)
-
-                jason_status = str(jason_data["StatusCode"])
-
-                if jason_status == "01":  # means a successful transaction
-
-                    # saving donate transaction info
-                    Donate_transaction.comment = donatereason
-                    Donate_transaction.email = donnorEmail
-                    Donate_transaction.phoneNumber = _tel
-                    Donate_transaction.amount = _amount
-                    Donate_transaction.statusCode = int(jason_status)
-                    Donate_transaction.transactionId = jason_data["TransactionID"]
-                    Donate_transaction.save()
-
-                    # send email to alert client of his subscription sending Tefa email
-                    email_subject = "TEFA Donation"
-                    email_content = "Thank you for your generous donation. IT will go in for Support and maintainance of the platform."
-                    email = EmailMessage(email_subject, email_content, to=[donnorEmail])
-                    email.send()
-
-                    # success message (transaction success)
-                    messages.success(request,
-                                     " Successfully donated to TEFA ")
-
-                    # redirect to homepage
-                    return redirect("/")  # if user is already subscribed for course direct him to video page
-
-                else:  # transaction failure
-                    # saving donate transaction info
-                    Donate_transaction.comment = donatereason
-                    Donate_transaction.email = donnorEmail
-                    Donate_transaction.phoneNumber = _tel
-                    Donate_transaction.amount = _amount
-                    Donate_transaction.statusCode = int(jason_status)
-                    Donate_transaction.transactionId = jason_data["TransactionID"]
-                    Donate_transaction.save()
-
-                    # send email to alert client of his subscription sending Tefa email
-                    email_subject = "TEFA Donation"
-                    email_content = "Donation failed. We are really sorry for the errors, we will get the problems resolved as soon as possible."
-                    email = EmailMessage(email_subject, email_content, to=[donnorEmail])
-                    email.send()
-
-                    # error message (transaction success)
-                    messages.error(request, " Your Donation failed Try again later")
-
-                    # redirect to course Video page
-                    return redirect("homepg:donatemomo")  # if user is already subscribed for course direct him to video page
-
-            else:
-                messages.error(request, " Phone Number Incorrect, Please try again later")
-                return redirect("homepg:donatemomo")  # inputted email was wrong
-
-        else:
-            messages.error(request, " Enter a valid information ")
-            return redirect("homepg:donatemomo")  # inputted email was wrong
-
-    else:
-        return render(request, "Core/Donate.html", {})
 
 
 
