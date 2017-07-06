@@ -85,7 +85,12 @@ WSGI_APPLICATION = 'TEFA.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': 'dc4mgivctolhbc',
+        'HOST': 'ec2-23-21-220-48.compute-1.amazonaws.com',
+        'USER': 'ogsizydfshfjgb',
+        'PASSWORD': '21bd0d755a1af1310cbefd6c32893745964718a6a7bb378d4ad0808e965a5bd9',
+        'PORT': '5432',
+
     }
 }
 
