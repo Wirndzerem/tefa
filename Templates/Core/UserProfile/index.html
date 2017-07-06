@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load static %}
 
 {% block style %} <link href="{% static 'css/Homepage/UserProfile/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/> {% endblock style%}
 {% block title %} TEFA: {{ user.username|capfirst }} Profile{% endblock title %}
