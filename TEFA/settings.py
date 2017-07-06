@@ -15,7 +15,7 @@ SECRET_KEY = 'vrp@x%i=z%j@rff_6^fq1ozzyt8nv!kx*d870u_v^c2y0qoug3'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '*'
+    'mikilimnyuy.herokuapp.com'
 ]
 
 
@@ -127,13 +127,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
-]
+
+
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn")  # this is to create a virtual network on which we will have our static files
-
+STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")  # this is to create a virtual network on which we will have our static files
