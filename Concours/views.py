@@ -7,7 +7,7 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.db.models import Q
-import urllib.parse
+e
 import requests
 
 # Create your views here.
@@ -333,96 +333,6 @@ def Subscribe(request, course_id, user_id, school_id):  # when you subscribe it 
     if not StudentSubscribedConcourcourse.objects.filter(course=course_id, student=user_id, concour=school_id):  # if user is not yet subscribed
         if request.method =="POST":  # if user is in submitted form
             subscribe_form = SubscribeForm(request.POST)
-            if subscribe_form.is_valid():  # no error in form
-                _amount = subscribe_form.cleaned_data["amount"]
-                _tel = subscribe_form.cleaned_data["contact"]
-                _email = "blaisefonyuy@gmail.com"  # Merchant email used to register for MoMo Merchant Account
-                main_api = "https://developer.mtn.cm/OnlineMomoWeb/faces/transaction/transactionRequest.xhtml?idbouton=2&typebouton=PAIE&"
-                # composining the momo json request
-                api_url = main_api+urllib.parse.urlencode({'_amount':1})+"&"+urllib.parse.urlencode({'_tel':_tel})+"&_clP=&"+urllib.parse.urlencode({'_email':_email})
-                jason_data = requests.get(api_url).json() # carries out transaction request and stores response (jason response from MTN Mobile Money)
-
-                contactstring = str(_tel)
-
-                if len(contactstring)>=9 and len(contactstring)<=12:  # making sure number is above 9 digits for cameroon
-                    user_transaction = MoMoTransactions()
-                    user_subscribtion = StudentSubscribedConcourcourse()
-                    jason_status = str(jason_data["StatusCode"])
-
-                    if jason_status == "01":  # means a successful transaction
-
-                        # saving subscription info
-                        course = ConcourCourse.objects.get(id=course_id)
-                        school = Concour.objects.get(id=school_id)
-                        user = User.objects.get(id=user_id)
-                        user_subscribtion.course = course
-                        user_subscribtion.student = user
-                        user_subscribtion.level = course.departement
-                        user_subscribtion.concour = school
-                        user_subscribtion.save()
-
-                        # saving transaction
-                        course = ConcourToCourseMap.objects.get(id=course_id)
-                        user_transaction.username = user
-                        user_transaction.coursename = course
-                        user_transaction.phoneNumber = _tel
-                        user_transaction.amount = _amount
-                        user_transaction.statusCode = int(jason_status)
-                        user_transaction.transactionId = jason_data["TransactionID"]
-                        user_transaction.save()
-
-                        # send email to alert client of his subscription sending Tefa email
-                        email_subject = "TEFA Course Subscription"
-                        email_content = "You are recieving this mail because " + user.username + " subscribed for " + course.coursename.coursename + ". Click on the link below to access your course page directly 127.0.0.1:8000/Concours/Subscribe/Course/Confirmation/" + course_id + "/" + user_id + "/" + school_id + "/"
-                        email = EmailMessage(email_subject, email_content, to=[user.email])
-                        email.send()
-
-                        # success message (transaction success)
-                        messages.success(request, user.username+" Successfully subscribed for "+course.coursename.coursename)
-
-                        # redirect to course Video page
-                        return redirect("Concours:coursevideos", course_id, chapter_id,
-                                    topic_id)  # if user is already subscribed for course direct him to video page
-
-                    else:   # transaction failure
-                        user = User.objects.get(id=user_id)
-
-                        # saving transaction
-                        course = ConcourToCourseMap.objects.get(id=course_id)
-                        user_transaction.username = user
-                        user_transaction.coursename = course
-                        user_transaction.phoneNumber = _tel
-                        user_transaction.amount = _amount
-                        user_transaction.statusCode = jason_status
-                        user_transaction.transactionId = jason_data["TransactionID"]
-                        user_transaction.save()
-
-                        # send email to alert client of his subscription sending Tefa email
-                        email_subject = "TEFA Course Subscription"
-                        email_content = "You are recieving this mail because " + user.username + " attempted to subscribe for " + course.coursename.coursename + " but the process failed click here to resubscribe 127.0.0.1:8000/Concours/Subscribe/Course/" + course_id + "/" + user_id + "/" + school_id + "/"
-                        email = EmailMessage(email_subject, email_content, to=[user.email])
-                        email.send()
-
-                        # error message (transaction success)
-                        messages.error(request,
-                                         user.username + " your subscribtion for " + course.coursename.coursename +" failed. Try again later")
-
-                        # redirect to course Video page
-                        return redirect("Concours:subscribe", course_id, user_id, school_id)  # if user is already subscribed for course direct him to video page
-
-                else:
-                    messages.error(request, " Phone Number Incorrect, Please try again later")
-                    return redirect("Concours:subscribe", course_id, user_id, school_id)  # inputted email was wrong
-
-            else:
-                messages.error(request, " Enter a valid phone number    ")
-                return redirect("Concours:subscribe", course_id, user_id, school_id)  # inputted email was wrong
-
-        else:
-            return render(request, "Concours/Mobile_Money/index.html", { "course_id": course_id, "user_id": user_id, "school_id":school_id } )  # inputted email was wrong
-    else:
-        return redirect("Concours:coursevideos", course_id, chapter_id, topic_id)  # if user is already subscribed for course direct him to video page
-
 
 
 @login_required  # displaying video course page
